@@ -1746,7 +1746,6 @@ static int kionix_accel_probe(struct i2c_client *client,
 
 	struct kionix_accel_driver *acceld;
 	int err;
-	struct proc_dir_entry *proc_dir, *proc_entry;
 
 	if(accel_pdata->accel_irq_use_drdy)
 	{
@@ -1914,15 +1913,6 @@ static int kionix_accel_probe(struct i2c_client *client,
 	acceld->poll_delay = msecs_to_jiffies(acceld->poll_interval);
 	acceld->kionix_accel_update_odr(acceld, acceld->poll_interval);
 	kionix_accel_update_direction(acceld);
-
-	proc_dir = proc_mkdir("sensors", NULL);
-	if (proc_dir == NULL)
-		KMSGERR(&client->dev, "failed to create /proc/sensors\n");
-	else {
-		proc_entry = create_proc_entry( "accelinfo", 0644, proc_dir);
-		if (proc_entry == NULL)
-			KMSGERR(&client->dev, "failed to create /proc/cpu/accelinfo\n");
-	}
 
 	acceld->accel_workqueue = create_workqueue("Kionix Accel Workqueue");
 	INIT_DELAYED_WORK(&acceld->accel_work, kionix_accel_work);
