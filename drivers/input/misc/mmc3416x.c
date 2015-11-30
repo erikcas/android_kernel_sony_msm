@@ -597,10 +597,23 @@ static struct regmap_config mmc3416x_regmap_config = {
 	.val_bits = 8,
 };
 
+static const unsigned short normal_i2c[] = { 0x0f, I2C_CLIENT_END };
+
 static int mmc3416x_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
 	int res = 0;
 	struct mmc3416x_data *memsic;
+	struct i2c_adapter *i2c_adap;
+	struct i2c_board_info i2c_info;
+
+
+	i2c_adap = i2c_get_adapter(1);
+	memset(&i2c_info, 0, sizeof(struct i2c_board_info));
+	strlcpy(i2c_info.type, "kxtj2", I2C_NAME_SIZE);
+	i2c_new_probed_device(i2c_adap, &i2c_info,
+					normal_i2c, NULL);
+	printk("[CCI]%s: mmc3416_create_kxtj_hack ---\n", __FUNCTION__);
+	i2c_put_adapter(i2c_adap);
 
 	dev_dbg(&client->dev, "probing mmc3416x\n");
 

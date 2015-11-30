@@ -995,6 +995,7 @@ static int yas_probe_trigger(struct iio_dev *indio_dev)
 {
 	int ret;
 	struct yas_state *st = iio_priv(indio_dev);
+
 	indio_dev->pollfunc = iio_alloc_pollfunc(&iio_pollfunc_store_time,
 			&yas_trigger_handler, IRQF_ONESHOT, indio_dev,
 			"%s_consumer%d", indio_dev->name, indio_dev->id);
@@ -1473,12 +1474,26 @@ custom_class_error:
 	return -1;
 }
 
+static const unsigned short normal_i2c[] = { 0x0f, I2C_CLIENT_END };
+
 static int yas_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 {
 	struct yas_state *st;
 	struct iio_dev *indio_dev;
 	struct yas_platform_data *pdata;
 	int ret;
+	/* Init kxtj2 if it is available */
+	struct i2c_adapter *i2c_adap;
+	struct i2c_board_info i2c_info;
+
+
+	i2c_adap = i2c_get_adapter(1);
+	memset(&i2c_info, 0, sizeof(struct i2c_board_info));
+	strlcpy(i2c_info.type, "kxtj2", I2C_NAME_SIZE);
+	i2c_new_probed_device(i2c_adap, &i2c_info,
+					normal_i2c, NULL);
+	printk("[CCI]%s: yas532_create_kxtj_hack ---\n", __FUNCTION__);
+	i2c_put_adapter(i2c_adap);
 
 	this_client = i2c;
 	mag_sensor_power_on(i2c);
