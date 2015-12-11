@@ -544,7 +544,8 @@ static const struct of_device_id fg_match_table[] = {
 static char *fg_supplicants[] = {
 	"battery",
 	"bcl",
-	"fg_adc"
+	"fg_adc",
+	"lpm"
 };
 
 #ifdef CONFIG_QPNP_FG_EXTENSION
