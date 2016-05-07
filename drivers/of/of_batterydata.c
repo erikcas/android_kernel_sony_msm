@@ -337,6 +337,8 @@ struct device_node *of_batterydata_get_best_profile(
 
 	batt_id_kohm = ret.intval / 1000;
 
+	pr_info("BATT: Current battery ID is %d kohm\n", batt_id_kohm);
+
 	/* read battery id range percentage for best profile */
 	rc = of_property_read_u32(batterydata_container_node,
 			"qcom,batt-id-range-pct", &id_range_pct);
@@ -431,6 +433,9 @@ int of_batterydata_read_data(struct device_node *batterydata_container_node,
 	best_node = NULL;
 	best_delta = 0;
 	best_id_kohm = 0;
+
+	pr_info("%s: Found battery resistor value %d kohm\n",
+		__func__, batt_id_kohm);
 
 	/*
 	 * Find the battery data with a battery id resistor closest to this one
