@@ -13,7 +13,7 @@
 #define MHL_SII8620_BIST_H_
 
 /* init/exit */
-#ifdef CONFIG_MHL_BIST
+#ifdef MHL_BIST
 void mhl_bist_initilize(struct device *pdev);
 void mhl_bist_release(void);
 #else
